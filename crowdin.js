@@ -42,7 +42,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const resp = await fetch("/api/languages");
+    const resp = await fetch(
+      "https://raft-web-backend.onrender.com/api/languages",
+    );
     if (!resp.ok) throw new Error("Error al obtener idiomas");
     const data = await resp.json();
     if (typeof data.crowdin === "number") {

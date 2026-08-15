@@ -46,7 +46,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const resp = await fetch("/api/downloads");
+    const resp = await fetch(
+      "https://raft-web-backend.onrender.com/api/downloads",
+    );
     if (!resp.ok) throw new Error("Error al obtener descargas");
     const data = await resp.json();
     if (curseforgeEl && typeof data.curseforge === "number") {

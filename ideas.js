@@ -42,11 +42,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     statusEl.textContent = t("ideas_sending");
 
     try {
-      const resp = await fetch("/api/ideas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ author, contact, text }),
-      });
+      const resp = await fetch(
+        "https://raft-web-backend.onrender.com/api/ideas",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ author, contact, text }),
+        },
+      );
 
       if (!resp.ok) throw new Error("Error en el envío");
 
