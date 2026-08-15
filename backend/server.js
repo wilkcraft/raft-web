@@ -148,6 +148,6 @@ app.get("/api/languages", async (req, res) => {
 });
 
 const port = process.env.PORT || 4750;
-app.listen(port, "127.0.0.1", () => {
-  console.log(`Backend de ideas escuchando en http://127.0.0.1:${port}`);
+app.listen(port, () => {
+  console.log(`Backend de ideas escuchando en el puerto ${port}`);
 });
