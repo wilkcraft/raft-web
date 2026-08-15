@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-key="page_title_advancements">- Raft World</title>
+    <link rel="icon" href="img/favicon.ico" sizes="any" />
+    <link rel="icon" href="img/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="img/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @font-face {
+        font-family: "Minecraftia";
+        src: url("fonts/Minecraftia.woff2") format("woff2");
+        font-display: swap;
+      }
+      .logo-area h1,
+      .page-title,
+      .hero h2,
+      .stage-title,
+      .adv-card .title,
+      .wiki-block .name,
+      nav a,
+      .btn {
+        font-family: "Minecraftia", "Segoe UI", sans-serif;
+        letter-spacing: 0.5px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      a {
+        color: #f0c27a;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #ffdd99;
+      }
+
+      header {
+        background: #16162c;
+        border-bottom: 4px solid #3a3a3a;
+        backdrop-filter: blur(6px);
+        padding: 0.8rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .logo-area img {
+        height: 48px;
+        width: 48px;
+        object-fit: contain;
+        transition: transform 0.35s ease;
+      }
+
+      .logo-area h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #f0c27a;
+        letter-spacing: 1px;
+        transition: color 0.25s ease, transform 0.25s ease;
+      }
+
+      .logo-area:hover img {
+        transform: rotate(-8deg) scale(1.08);
+      }
+
+      .logo-area:hover h1 {
+        color: #ffdd99;
+        transform: translateX(3px);
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.4rem 1rem;
+        width: 100%;
+      }
+      nav a {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+        font-size: 0.95rem;
+      }
+      nav a:hover,
+      nav a.active {
+        background: #f0c27a22;
+        color: #ffdd99;
+      }
+
+      .lang-dropdown {
+        background: #2a2a4a;
+        color: #e0e0e0;
+        border: 1px solid #f0c27a66;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.95rem;
+        cursor: pointer;
+        outline: none;
+        transition: border 0.2s;
+        min-width: 150px;
+      }
+      .lang-dropdown:hover {
+        border-color: #f0c27a;
+      }
+
+      .nav-utility {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-left: auto;
+      }
+      .container {
+        flex: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        width: 100%;
+      }
+      .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #f0c27a;
+        margin-bottom: 0.5rem;
+        border-bottom: 2px solid #f0c27a33;
+        padding-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .title-icon {
+        width: 40px;
+        height: 40px;
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        flex-shrink: 0;
+      }
+      .page-sub {
+        opacity: 0.7;
+        margin-bottom: 2rem;
+      }
+      .adv-badge {
+        display: inline-block;
+        background: #2a2a4a;
+        border: 1px solid #f0c27a55;
+        border-radius: 30px;
+        padding: 0.5rem 1.8rem;
+        margin: 0.4rem 0.6rem 0.4rem 0;
+        font-size: 1rem;
+      }
+      .adv-badge i {
+        color: #f0c27a;
+        margin-right: 0.6rem;
+      }
+      .adv-card {
+        background: #1f1f3a;
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #f0c27a;
+      }
+      .adv-card .title {
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #f0c27a;
+      }
+      .adv-card .desc {
+        opacity: 0.8;
+        margin: 0.3rem 0;
+      }
+      .adv-card .meta {
+        font-size: 0.85rem;
+        opacity: 0.5;
+      }
+      footer {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        border-top: 1px solid #f0c27a33;
+        font-size: 0.9rem;
+        opacity: 0.6;
+        margin-top: 2rem;
+      }
+
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: #f0c27a;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        line-height: 1;
+      }
+      .menu-toggle i {
+        pointer-events: none;
+      }
+
+      @media (max-width: 680px) {
+        html.menu-open,
+        body.menu-open {
+          overflow: hidden;
+          height: 100%;
+        }
+        .title-icon {
+          width: 30px;
+          height: 30px;
+        }
+        header {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: nowrap;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+        }
+        .menu-toggle {
+          display: block;
+        }
+        nav {
+          display: none;
+          position: fixed;
+          top: 72px;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.3rem;
+          background: rgba(26, 26, 46, 0.98);
+          backdrop-filter: blur(6px);
+          border-bottom: 2px solid #f0c27a;
+          padding: 1rem;
+          z-index: 999;
+        }
+        nav.open {
+          display: flex;
+          flex-wrap: nowrap;
+          max-height: calc(100vh - 72px);
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+        }
+        nav a {
+          width: 100%;
+          text-align: center;
+          padding: 0.7rem;
+        }
+        .nav-utility {
+          width: fit-content;
+          max-width: 100%;
+          margin: 0.3rem auto 0;
+          justify-content: center;
+        }
+        .lang-dropdown {
+          flex: 1;
+        }
+        .nav-discord {
+          font-size: 1.4rem;
+        }
+        .wiki-block {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.4rem;
+        }
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+        .footer-build {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .wilkcraft-link {
+        position: relative;
+        color: inherit;
+        text-decoration: none;
+        font-weight: bold;
+        padding-bottom: 3px;
+        transition: color 0.25s ease;
+      }
+
+      /* Línea SIEMPRE visible */
+      .wilkcraft-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: currentColor; /* mismo color que el texto */
+        transition: background-color 0.25s ease, transform 0.35s ease;
+        transform-origin: center;
+      }
+
+      /* Animación al hacer hover */
+      .wilkcraft-link:hover::after {
+        transform: scaleX(1.2); /* pequeño efecto animado */
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.6rem 1.5rem;
+      }
+
+      .footer-left {
+        flex: 1;
+        min-width: 220px;
+      }
+
+      .footer-build {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: inherit;
+        opacity: 0;
+        transition: opacity 0.4s ease, color 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .footer-build.visible {
+        opacity: 1;
+      }
+
+      .footer-build:hover {
+        color: #ffdd99;
+      }
+
+      .footer-disclaimer {
+        margin: 1rem auto 0;
+        padding-top: 1rem;
+        border-top: 1px solid #f0c27a22;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        opacity: 0.55;
+      }
+
+      .build-tag-value {
+        font-weight: 700;
+        color: #f0c27a;
+      }
+
+      .nav-discord {
+        color: #5865f2;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+      }
+      .nav-discord:hover {
+        color: #8891ff;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="index.html" class="logo-area">
+        <img src="img/logo.png" alt="Raft World Logo" />
+        <h1>Raft World</h1>
+      </a>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <nav>
+        <a href="index.html" data-key="nav_home"></a>
+        <a href="wiki.html" data-key="nav_wiki"></a>
+        <a href="progression.html" data-key="nav_progression"></a>
+        <a href="loot.html" data-key="nav_loot"></a>
+        <a
+          href="advancements.html"
+          class="active"
+          data-key="nav_advancements"
+        ></a>
+        <a href="world.html" data-key="nav_world"></a>
+        <a href="faq.html" data-key="nav_faq"></a>
+        <a href="ideas.html" data-key="nav_ideas"></a>
+        <div class="nav-utility">
+          <select id="langSelector" class="lang-dropdown">
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+          </select>
+          <a
+            href="https://discord.gg/7WCeHgphsb"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-discord"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h2 class="page-title">
+        <img src="img/icons/nether_star.png" class="title-icon" alt="" />
+        <span data-key="adv_title"></span>
+      </h2>
+      <p class="page-sub" data-key="adv_sub"></p>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_root">Raft World</span></div>
+        <div class="desc" data-key="adv_root_desc"></div>
+        <div class="meta"><span data-key="adv_root_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_net"></span></div>
+        <div class="desc" data-key="adv_net_desc"></div>
+        <div class="meta"><span data-key="adv_net_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_wheat"></span></div>
+        <div class="desc" data-key="adv_wheat_desc"></div>
+        <div class="meta"><span data-key="adv_wheat_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_stone"></span></div>
+        <div class="desc" data-key="adv_stone_desc"></div>
+        <div class="meta"><span data-key="adv_stone_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_iron"></span></div>
+        <div class="desc" data-key="adv_iron_desc"></div>
+        <div class="meta"><span data-key="adv_iron_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_iron_tools"></span></div>
+        <div class="desc" data-key="adv_iron_tools_desc"></div>
+        <div class="meta"><span data-key="adv_iron_tools_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_iron_armor"></span></div>
+        <div class="desc" data-key="adv_iron_armor_desc"></div>
+        <div class="meta"><span data-key="adv_iron_armor_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_turtle_materials"></span></div>
+        <div class="desc" data-key="adv_turtle_materials_desc"></div>
+        <div class="meta">
+          <span data-key="adv_turtle_materials_trigger"></span>
+        </div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_deep_diver"></span></div>
+        <div class="desc" data-key="adv_deep_diver_desc"></div>
+        <div class="meta"><span data-key="adv_deep_diver_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_gold"></span></div>
+        <div class="desc" data-key="adv_gold_desc"></div>
+        <div class="meta"><span data-key="adv_gold_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_diamond"></span></div>
+        <div class="desc" data-key="adv_diamond_desc"></div>
+        <div class="meta"><span data-key="adv_diamond_trigger"></span></div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_diamond_armor"></span></div>
+        <div class="desc" data-key="adv_diamond_armor_desc"></div>
+        <div class="meta">
+          <span data-key="adv_diamond_armor_trigger"></span>
+        </div>
+      </div>
+
+      <div class="adv-card">
+        <div class="title"><span data-key="adv_obsidian"></span></div>
+        <div class="desc" data-key="adv_obsidian_desc"></div>
+        <div class="meta">
+          <span data-key="adv_obsidian_trigger"></span>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p class="footer-left">
+          © 2026 Raft World Mod &bull;
+          <a
+            href="https://www.wilkcraft.work/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            Wilkcraft
+          </a>
+          &bull;
+          <a
+            href="https://github.com/wilkcraft/RaftWorld/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            <i class="fas fa-bug"></i>
+            <span data-key="footer_bug"></span>
+          </a>
+        </p>
+        <a href="changelog.html" id="buildTag" class="footer-build">
+          <i class="fas fa-code-branch"></i>
+          <span data-key="footer_build"></span
+          ><span class="build-tag-sep">: </span
+          ><span class="build-tag-value"></span>
+        </a>
+      </div>
+      <p class="footer-disclaimer" data-key="footer_disclaimer"></p>
+    </footer>
+
+    <script src="lang.js" defer></script>
+    <script src="menu.js?v=2" defer></script>
+    <script src="build-footer.js" defer></script>
+  </body>
+</html>

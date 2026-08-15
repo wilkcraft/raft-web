@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raft World Mod</title>
+    <link rel="icon" href="img/favicon.ico" sizes="any" />
+    <link rel="icon" href="img/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="img/favicon.ico" />
+    <link rel="icon" href="img/favicon.ico" sizes="any" />
+    <link rel="icon" href="img/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="img/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Raft World Mod" />
+    <meta
+      name="description"
+      content="Raft World is a Minecraft 1.21.1 NeoForge mod that transforms the world into a raft-based survival adventure featuring progression, loot, and new challenges."
+    />
+
+    <meta
+      property="og:description"
+      content="Survive on a raft in an endless ocean with Raft World for Minecraft NeoForge 1.21.1."
+    />
+    <meta
+      property="og:image"
+      content="https://raft.wilkcraft.work/img/favicon.png"
+    />
+    <meta property="og:url" content="https://raft.wilkcraft.work/" />
+    <link rel="canonical" href="https://raft.wilkcraft.work/" />
+    <meta property="og:type" content="website" />
+    <meta name="keywords" content="minecraft mod, survival, raft" />
+    <meta name="author" content="Wilkcraft" />
+    <meta name="robots" content="index, follow" />
+    <style>
+      @font-face {
+        font-family: "Minecraftia";
+        src: url("fonts/Minecraftia.woff2") format("woff2");
+        font-display: swap;
+      }
+      .logo-area h1,
+      .page-title,
+      .hero h2,
+      .stage-title,
+      .adv-card .title,
+      .wiki-block .name,
+      nav a,
+      .btn {
+        font-family: "Minecraftia", "Segoe UI", sans-serif;
+        letter-spacing: 0.5px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      a {
+        color: #f0c27a;
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: #ffdd99;
+      }
+
+      header {
+        background: #16162c;
+        border-bottom: 4px solid #3a3a3a;
+        backdrop-filter: blur(6px);
+        padding: 0.8rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .logo-area img {
+        height: 48px;
+        width: 48px;
+        object-fit: contain;
+        transition: transform 0.35s ease;
+      }
+
+      .logo-area h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #f0c27a;
+        letter-spacing: 1px;
+        transition: color 0.25s ease, transform 0.25s ease;
+      }
+
+      .logo-area:hover img {
+        transform: rotate(-8deg) scale(1.08);
+      }
+
+      .logo-area:hover h1 {
+        color: #ffdd99;
+        transform: translateX(3px);
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.4rem 1rem;
+        width: 100%;
+      }
+
+      nav a {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+        font-size: 0.95rem;
+      }
+
+      nav a:hover,
+      nav a.active {
+        background: #f0c27a22;
+        color: #ffdd99;
+      }
+
+      .lang-dropdown {
+        background: #2a2a4a;
+        color: #e0e0e0;
+        border: 1px solid #f0c27a66;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.95rem;
+        cursor: pointer;
+        outline: none;
+        transition: border 0.2s;
+        min-width: 150px;
+      }
+
+      .lang-dropdown:hover {
+        border-color: #f0c27a;
+      }
+
+      .nav-utility {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-left: auto;
+      }
+
+      /* ============================================================
+               HERO
+            ============================================================ */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          #1a1a2e 0%,
+          #16213e 60%,
+          #0f3460 100%
+        );
+        padding: 3.5rem 2rem;
+        text-align: center;
+        border-bottom: 2px solid #f0c27a44;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.12;
+        pointer-events: none;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .hero h2 {
+        display: inline-block;
+        font-size: 2.6rem;
+        font-weight: 800;
+        color: #f0c27a;
+        text-shadow: 0 4px 20px #00000066;
+        margin-bottom: 1rem;
+        padding: 0.6rem 1.4rem;
+        background: linear-gradient(
+          135deg,
+          rgba(240, 194, 122, 0.18),
+          rgba(0, 0, 0, 0.35)
+        );
+        border: 1px solid rgba(240, 194, 122, 0.25);
+        border-radius: 14px;
+        backdrop-filter: blur(6px);
+      }
+
+      .hero p {
+        display: inline-block;
+        font-size: 1.05rem;
+        opacity: 1;
+        margin-bottom: 0.7rem;
+        padding: 0.55rem 1rem;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(240, 194, 122, 0.25);
+        border-radius: 10px;
+        color: #fff;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+      }
+
+      .hero .sub {
+        display: inline-block;
+        font-size: 0.9rem;
+        opacity: 1;
+        margin-top: 0.4rem;
+        padding: 0.5rem 0.9rem;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(240, 194, 122, 0.25);
+        border-radius: 10px;
+        color: #fff;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+      }
+
+      .hero .btn {
+        margin-top: 1rem;
+      }
+
+      .btn {
+        display: inline-block;
+        background: #f0c27a;
+        color: #1a1a2e;
+        padding: 0.7rem 2rem;
+        border-radius: 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: background 0.2s, transform 0.15s;
+        box-shadow: 0 4px 14px #f0c27a44;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background: #ffdd99;
+        transform: scale(1.02);
+        color: #1a1a2e;
+      }
+
+      /* ============================================================
+               MAIN CONTENT
+            ============================================================ */
+      .container {
+        flex: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        width: 100%;
+      }
+
+      .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #f0c27a;
+        margin-bottom: 0.5rem;
+        border-bottom: 2px solid #f0c27a33;
+        padding-bottom: 0.5rem;
+      }
+
+      .page-sub {
+        opacity: 0.7;
+        margin-bottom: 2rem;
+      }
+
+      /* ============================================================
+               CARDS (home)
+            ============================================================ */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .card {
+        background: #25254a;
+        border-radius: 16px;
+        padding: 1.8rem 1.2rem;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid #f0c27a22;
+        box-shadow: 0 8px 24px #00000033;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 32px #00000055;
+        border-color: #f0c27a66;
+      }
+
+      .card i {
+        font-size: 2.8rem;
+        color: #f0c27a;
+        margin-bottom: 0.8rem;
+      }
+
+      .card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .card p {
+        opacity: 0.75;
+        font-size: 0.95rem;
+      }
+
+      /* ============================================================
+               WIKI / TABLA DE BLOQUES
+            ============================================================ */
+      .wiki-block {
+        background: #1f1f3a;
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #f0c27a;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem 2rem;
+      }
+
+      .wiki-block .name {
+        font-weight: 700;
+        font-size: 1.2rem;
+        min-width: 120px;
+      }
+
+      .wiki-block .desc {
+        flex: 1;
+        opacity: 0.85;
+      }
+
+      .wiki-block .meta {
+        font-size: 0.85rem;
+        opacity: 0.6;
+        background: #2a2a4a;
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+      }
+
+      /* ============================================================
+               PROGRESS / LOOT / ADVANCEMENTS
+            ============================================================ */
+      .stage-box {
+        background: #1f1f3a;
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1.2rem;
+        border-left: 4px solid #f0c27a;
+      }
+
+      .stage-box .stage-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #f0c27a;
+      }
+
+      .stage-box .stage-desc {
+        opacity: 0.8;
+        margin: 0.3rem 0 0.6rem;
+      }
+
+      .stage-box ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem 1.2rem;
+        padding-left: 0;
+      }
+
+      .stage-box ul li::before {
+        content: "▸ ";
+        color: #f0c27a;
+      }
+
+      .adv-badge {
+        display: inline-block;
+        background: #2a2a4a;
+        border: 1px solid #f0c27a55;
+        border-radius: 30px;
+        padding: 0.3rem 1.2rem;
+        margin: 0.2rem 0.4rem 0.2rem 0;
+        font-size: 0.9rem;
+      }
+
+      .adv-badge i {
+        color: #f0c27a;
+        margin-right: 0.4rem;
+      }
+
+      /* ============================================================
+               FAQ
+            ============================================================ */
+      .faq-item {
+        background: #1f1f3a;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 0.8rem;
+        border: 1px solid #f0c27a22;
+      }
+
+      .faq-item .q {
+        font-weight: 700;
+        color: #f0c27a;
+        font-size: 1.1rem;
+      }
+
+      .faq-item .a {
+        margin-top: 0.3rem;
+        opacity: 0.85;
+      }
+
+      /* ============================================================
+               FOOTER
+            ============================================================ */
+      footer {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        border-top: 1px solid #f0c27a33;
+        font-size: 0.9rem;
+        opacity: 0.6;
+        margin-top: 2rem;
+      }
+
+      .card {
+        cursor: pointer;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 32px #00000055;
+        border-color: #f0c27a66;
+      }
+
+      /* ================= DOWNLOAD PRO CARDS ================= */
+
+      .download-card {
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        padding-top: 0;
+      }
+
+      .download-card img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 16px 16px 0 0;
+        opacity: 0.9;
+      }
+
+      .download-card img.github-banner {
+        margin: 0 auto;
+        display: block;
+        object-fit: contain;
+      }
+
+      .download-card img.discord-banner {
+        margin: 0 auto;
+        display: block;
+        object-fit: contain;
+        object-position: center;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 20px;
+        background: #2a2a4a;
+        border: 1px solid #ff8c2a66;
+        color: #ffb36b;
+      }
+
+      .badge.neoforge {
+        color: #ffb36b;
+        border-color: #ff8c2a88;
+      }
+
+      .badge.code {
+        color: #ffb36b;
+        border-color: #ff8c2a88;
+      }
+
+      .badge.discord {
+        color: #8891ff;
+        border-color: #5865f288;
+      }
+
+      .badge.translate {
+        color: #7dd3a8;
+        border-color: #2fae6c88;
+      }
+
+      .badge-row {
+        display: flex;
+        justify-content: center;
+        margin: 0.8rem 0 1rem;
+      }
+
+      .download-card i {
+        margin-top: 0.4rem;
+        display: block;
+      }
+
+      .download-card h3 {
+        margin-top: 0.4rem;
+      }
+
+      .download-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.7rem;
+        padding: 0.35rem 1rem;
+        background: linear-gradient(135deg, #f0c27a22, #f0c27a11);
+        border: 1px solid #f0c27a55;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #f0c27a;
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+      }
+      .download-count.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .download-count i {
+        font-size: 0.85rem;
+        margin: 0;
+        display: inline;
+        color: #f0c27a;
+      }
+      .download-count .count-label {
+        font-weight: 400;
+        opacity: 0.75;
+        font-size: 0.8rem;
+      }
+
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: #f0c27a;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        line-height: 1;
+      }
+      .menu-toggle i {
+        pointer-events: none;
+      }
+
+      @media (max-width: 680px) {
+        html.menu-open,
+        body.menu-open {
+          overflow: hidden;
+          height: 100%;
+        }
+        header {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: nowrap;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+        }
+        .menu-toggle {
+          display: block;
+        }
+        nav {
+          display: none;
+          position: fixed;
+          top: 72px;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.3rem;
+          background: rgba(26, 26, 46, 0.98);
+          backdrop-filter: blur(6px);
+          border-bottom: 2px solid #f0c27a;
+          padding: 1rem;
+          z-index: 999;
+        }
+        nav.open {
+          display: flex;
+          flex-wrap: nowrap;
+          max-height: calc(100vh - 72px);
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+        }
+        nav a {
+          width: 100%;
+          text-align: center;
+          padding: 0.7rem;
+        }
+        .nav-utility {
+          width: fit-content;
+          max-width: 100%;
+          margin: 0.3rem auto 0;
+          justify-content: center;
+        }
+        .lang-dropdown {
+          flex: 1;
+        }
+        .nav-discord {
+          font-size: 1.4rem;
+        }
+        .wiki-block {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.4rem;
+        }
+        .hero h2 {
+          font-size: 2.2rem;
+        }
+
+        .page-title {
+          font-size: 1.8rem;
+        }
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+        .footer-build {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .wilkcraft-link {
+        position: relative;
+        color: inherit;
+        text-decoration: none;
+        font-weight: bold;
+        padding-bottom: 3px;
+        transition: color 0.25s ease;
+      }
+
+      /* Línea SIEMPRE visible */
+      .wilkcraft-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: currentColor; /* mismo color que el texto */
+        transition: background-color 0.25s ease, transform 0.35s ease;
+        transform-origin: center;
+      }
+
+      /* Animación al hacer hover */
+      .wilkcraft-link:hover::after {
+        transform: scaleX(1.2); /* pequeño efecto animado */
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.6rem 1.5rem;
+      }
+
+      .footer-left {
+        flex: 1;
+        min-width: 220px;
+      }
+
+      .footer-build {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: inherit;
+        opacity: 0;
+        transition: opacity 0.4s ease, color 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .footer-build.visible {
+        opacity: 1;
+      }
+
+      .footer-build:hover {
+        color: #ffdd99;
+      }
+
+      .footer-disclaimer {
+        margin: 1rem auto 0;
+        padding-top: 1rem;
+        border-top: 1px solid #f0c27a22;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        opacity: 0.55;
+      }
+
+      .build-tag-value {
+        font-weight: 700;
+        color: #f0c27a;
+      }
+
+      .nav-discord {
+        color: #5865f2;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+      }
+      .nav-discord:hover {
+        color: #8891ff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ==================== HEADER ==================== -->
+    <header>
+      <a href="index.html" class="logo-area">
+        <img src="img/logo.png" alt="Raft World Logo" />
+        <h1>Raft World</h1>
+      </a>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <nav>
+        <a href="index.html" class="active" data-key="nav_home"></a>
+        <a href="wiki.html" data-key="nav_wiki"></a>
+        <a href="progression.html" data-key="nav_progression"></a>
+        <a href="loot.html" data-key="nav_loot"></a>
+        <a href="advancements.html" data-key="nav_advancements"></a>
+        <a href="world.html" data-key="nav_world"></a>
+        <a href="faq.html" data-key="nav_faq"></a>
+        <a href="ideas.html" data-key="nav_ideas"></a>
+        <div class="nav-utility">
+          <select id="langSelector" class="lang-dropdown">
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+          </select>
+          <a
+            href="https://discord.gg/7WCeHgphsb"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-discord"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ==================== HERO ==================== -->
+    <section
+      class="hero"
+      style='
+        background-image: url("img/background.png");
+        background-size: cover;
+        background-position: center;
+      '
+    >
+      <div class="hero-content">
+        <h2 data-key="hero_title"></h2>
+        <br />
+        <p data-key="hero_sub"></p>
+        <br />
+        <div class="sub" data-key="hero_cmd"></div>
+        <br />
+        <a href="wiki.html" class="btn" data-key="hero_btn"></a>
+      </div>
+    </section>
+
+    <!-- ==================== MAIN ==================== -->
+    <main class="container">
+      <h2 class="page-title" data-key="home_features"></h2>
+      <p class="page-sub" data-key="home_sub"></p>
+
+      <div class="card-grid">
+        <div class="card" onclick="location.href = 'wiki.html'">
+          <i class="fas fa-cube"></i>
+          <h3 data-key="card_blocks"></h3>
+          <p data-key="card_blocks_desc"></p>
+        </div>
+
+        <div class="card" onclick="location.href = 'progression.html'">
+          <i class="fas fa-arrow-trend-up"></i>
+          <h3 data-key="card_progression"></h3>
+          <p data-key="card_progression_desc"></p>
+        </div>
+
+        <div class="card" onclick="location.href = 'loot.html'">
+          <i class="fas fa-box-open"></i>
+          <h3 data-key="card_loot"></h3>
+          <p data-key="card_loot_desc"></p>
+        </div>
+
+        <div class="card" onclick="location.href = 'advancements.html'">
+          <i class="fas fa-trophy"></i>
+          <h3 data-key="card_advancements"></h3>
+          <p data-key="card_advancements_desc"></p>
+        </div>
+
+        <div class="card" onclick="location.href = 'world.html'">
+          <i class="fas fa-water"></i>
+          <h3 data-key="card_world"></h3>
+          <p data-key="card_world_desc"></p>
+        </div>
+
+        <div class="card" onclick="location.href = 'faq.html'">
+          <i class="fas fa-question-circle"></i>
+          <h3 data-key="card_faq"></h3>
+          <p data-key="card_faq_desc"></p>
+        </div>
+
+        <div class="card" onclick="location.href = 'ideas.html'">
+          <i class="fas fa-lightbulb"></i>
+          <h3 data-key="card_ideas"></h3>
+          <p data-key="card_ideas_desc"></p>
+        </div>
+
+        <div class="card" onclick="location.href = 'changelog.html'">
+          <i class="fas fa-code-branch"></i>
+          <h3 data-key="card_changelog"></h3>
+          <p data-key="card_changelog_desc"></p>
+        </div>
+      </div>
+
+      <!-- ==================== DESCARGAS / ENLACES ==================== -->
+      <section class="container">
+        <h2 class="page-title" data-key="card_downloads"></h2>
+        <p class="page-sub" data-key="card_downloads_desc"></p>
+        <a
+          href="changelog.html"
+          class="wilkcraft-link"
+          style="display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem;"
+        >
+          <i class="fas fa-code-branch"></i>
+          <span data-key="card_downloads_changelog_link"></span>
+        </a>
+
+        <div class="card-grid">
+          <!-- CurseForge -->
+          <a
+            class="card download-card"
+            href="https://www.curseforge.com/minecraft/mc-mods/raft-world"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="img/curseforge-banner.png" alt="CurseForge" />
+            <div class="badge-row">
+              <span class="badge neoforge">NeoForge 1.21.1</span>
+            </div>
+            <i class="fas fa-cloud-arrow-down"></i>
+            <h3>CurseForge</h3>
+            <p data-key="card_download"></p>
+            <span class="download-count" id="curseforgeCount"></span>
+          </a>
+
+          <!-- Modrinth -->
+          <a
+            class="card download-card"
+            href="https://modrinth.com/mod/raft-world"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="img/modrinth-banner.png" alt="Modrinth" />
+            <div class="badge-row">
+              <span class="badge neoforge">NeoForge 1.21.1</span>
+            </div>
+            <i class="fas fa-download"></i>
+            <h3>Modrinth</h3>
+            <p data-key="card_download"></p>
+            <span class="download-count" id="modrinthCount"></span>
+          </a>
+
+          <!-- GitHub -->
+          <a
+            class="card download-card"
+            href="https://github.com/wilkcraft/RaftWorld"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/github-banner.png"
+              alt="GitHub"
+              class="github-banner"
+            />
+
+            <div class="badge-row">
+              <span class="badge code" data-key="card_github"></span>
+            </div>
+
+            <i class="fab fa-github"></i>
+            <h3>GitHub</h3>
+            <p data-key="card_github"></p>
+          </a>
+
+          <!-- Discord -->
+          <a
+            class="card download-card"
+            href="https://discord.gg/7WCeHgphsb"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="img/discord-banner.png"
+              alt="Discord"
+              class="discord-banner"
+            />
+            <div class="badge-row">
+              <span class="badge discord" data-key="card_discord_badge"></span>
+            </div>
+            <i class="fab fa-discord"></i>
+            <h3>Discord</h3>
+            <p data-key="card_discord"></p>
+          </a>
+
+          <!-- Crowdin -->
+          <a
+            class="card download-card"
+            href="https://crowdin.com/project/raft-world/invite?h=8d10fbc484b6d5b9493658fa5ffca6c42843037"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="img/Crowdin-banner.png" alt="Crowdin" />
+            <div class="badge-row">
+              <span
+                class="badge translate"
+                data-key="card_crowdin_badge"
+              ></span>
+            </div>
+            <i class="fas fa-language"></i>
+            <h3>Crowdin</h3>
+            <p data-key="card_crowdin_desc"></p>
+            <span class="download-count" id="crowdinCount"></span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p class="footer-left">
+          © 2026 Raft World Mod &bull;
+          <a
+            href="https://www.wilkcraft.work/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            Wilkcraft
+          </a>
+          &bull;
+          <a
+            href="https://github.com/wilkcraft/RaftWorld/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            <i class="fas fa-bug"></i>
+            <span data-key="footer_bug"></span>
+          </a>
+        </p>
+        <a href="changelog.html" id="buildTag" class="footer-build">
+          <i class="fas fa-code-branch"></i>
+          <span data-key="footer_build"></span
+          ><span class="build-tag-sep">: </span
+          ><span class="build-tag-value"></span>
+        </a>
+      </div>
+      <p class="footer-disclaimer" data-key="footer_disclaimer"></p>
+    </footer>
+
+    <script src="lang.js" defer></script>
+    <script src="menu.js?v=2" defer></script>
+    <script src="downloads.js?v=2" defer></script>
+    <script src="build-footer.js" defer></script>
+    <script src="crowdin.js?v=2" defer></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "raft_net": {
+    "category": "block",
+    "recipe": "raft_net",
+    "name": "wiki_raft_net",
+    "desc": "wiki_raft_net_desc",
+    "meta": "wiki_raft_net_meta"
+  },
+  "enchanted_turtle_helmet": {
+    "category": "item",
+    "recipe": "enchanted_turtle_shell",
+    "name": "wiki_enchanted_turtle_helmet",
+    "desc": "wiki_enchanted_turtle_helmet_desc",
+    "meta": "wiki_enchanted_turtle_helmet_meta"
+  },
+  "shark": {
+    "category": "entity",
+    "recipe": "shark",
+    "name": "wiki_shark",
+    "desc": "wiki_shark_desc",
+    "meta": "wiki_shark_meta"
+  }
+}

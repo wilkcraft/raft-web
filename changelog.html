@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Changelog - Raft World</title>
+    <link rel="icon" href="img/favicon.ico" sizes="any" />
+    <link rel="icon" href="img/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="img/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @font-face {
+        font-family: "Minecraftia";
+        src: url("fonts/Minecraftia.woff2") format("woff2");
+        font-display: swap;
+      }
+      .logo-area h1,
+      .page-title,
+      .hero h2,
+      .stage-title,
+      .adv-card .title,
+      .wiki-block .name,
+      nav a,
+      .btn {
+        font-family: "Minecraftia", "Segoe UI", sans-serif;
+        letter-spacing: 0.5px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      a {
+        color: #f0c27a;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #ffdd99;
+      }
+      header {
+        background: #16162c;
+        border-bottom: 4px solid #3a3a3a;
+        backdrop-filter: blur(6px);
+        padding: 0.8rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+      }
+      .logo-area img {
+        height: 48px;
+        width: 48px;
+        object-fit: contain;
+        transition: transform 0.35s ease;
+      }
+      .logo-area h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #f0c27a;
+        letter-spacing: 1px;
+        transition: color 0.25s ease, transform 0.25s ease;
+      }
+      .logo-area:hover img {
+        transform: rotate(-8deg) scale(1.08);
+      }
+      .logo-area:hover h1 {
+        color: #ffdd99;
+        transform: translateX(3px);
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.4rem 1rem;
+        width: 100%;
+      }
+      nav a {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+        font-size: 0.95rem;
+      }
+      nav a:hover,
+      nav a.active {
+        background: #f0c27a22;
+        color: #ffdd99;
+      }
+
+      .lang-dropdown {
+        background: #2a2a4a;
+        color: #e0e0e0;
+        border: 1px solid #f0c27a66;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.95rem;
+        cursor: pointer;
+        outline: none;
+        transition: border 0.2s;
+        min-width: 150px;
+      }
+      .lang-dropdown:hover {
+        border-color: #f0c27a;
+      }
+
+      .nav-utility {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-left: auto;
+      }
+
+      .container {
+        flex: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        width: 100%;
+      }
+      .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #f0c27a;
+        margin-bottom: 0.5rem;
+        border-bottom: 2px solid #f0c27a33;
+        padding-bottom: 0.5rem;
+      }
+      .page-sub {
+        opacity: 0.7;
+        margin-bottom: 2rem;
+      }
+
+      /* ============================================================
+               CHANGELOG
+            ============================================================ */
+      .changelog-status {
+        opacity: 0.7;
+        padding: 1rem 0;
+      }
+      .changelog-status.error {
+        color: #ff8c8c;
+      }
+      .changelog-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .changelog-item {
+        background: #1f1f3a;
+        border-radius: 12px;
+        border: 1px solid #f0c27a22;
+        overflow: hidden;
+      }
+      .changelog-header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.1rem 1.5rem;
+        background: none;
+        border: none;
+        border-left: 4px solid #f0c27a;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        flex-wrap: wrap;
+      }
+      .changelog-header:hover {
+        background: #f0c27a11;
+      }
+      .changelog-header-main {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+      }
+      .changelog-version {
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: #f0c27a;
+      }
+      .changelog-badge {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.7rem;
+        border-radius: 20px;
+        background: #2a2a4a;
+        border: 1px solid #ff8c2a88;
+        color: #ffb36b;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .changelog-header-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        opacity: 0.7;
+        font-size: 0.9rem;
+      }
+      .changelog-chevron {
+        transition: transform 0.25s ease;
+      }
+      .changelog-header[aria-expanded="true"] .changelog-chevron {
+        transform: rotate(180deg);
+      }
+      .changelog-body {
+        padding: 0 1.5rem 1.5rem 1.9rem;
+        border-top: 1px solid #f0c27a22;
+      }
+      .changelog-markdown {
+        padding-top: 1rem;
+        opacity: 0.9;
+        line-height: 1.6;
+      }
+      .changelog-markdown h1,
+      .changelog-markdown h2,
+      .changelog-markdown h3 {
+        color: #f0c27a;
+        margin: 1.2rem 0 0.6rem;
+        font-family: inherit;
+        letter-spacing: normal;
+      }
+      .changelog-markdown h1:first-child,
+      .changelog-markdown h2:first-child,
+      .changelog-markdown h3:first-child {
+        margin-top: 0;
+      }
+      .changelog-markdown p {
+        margin: 0.5rem 0;
+      }
+      .changelog-markdown ul,
+      .changelog-markdown ol {
+        margin: 0.5rem 0 0.5rem 1.4rem;
+      }
+      .changelog-markdown li {
+        margin: 0.25rem 0;
+      }
+      .changelog-markdown blockquote {
+        margin: 0.7rem 0;
+        padding: 0.6rem 1rem;
+        border-left: 3px solid #f0c27a88;
+        background: #f0c27a11;
+        border-radius: 0 8px 8px 0;
+        opacity: 0.9;
+      }
+      .changelog-markdown hr {
+        border: none;
+        border-top: 1px solid #f0c27a33;
+        margin: 1.2rem 0;
+      }
+      .changelog-markdown table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.8rem 0;
+        font-size: 0.9rem;
+      }
+      .changelog-markdown th,
+      .changelog-markdown td {
+        border: 1px solid #f0c27a33;
+        padding: 0.5rem 0.8rem;
+        text-align: left;
+      }
+      .changelog-markdown th {
+        background: #2a2a4a;
+        color: #f0c27a;
+      }
+      .changelog-markdown code {
+        background: #2a2a4a;
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      .changelog-markdown strong {
+        color: #ffdd99;
+      }
+      .changelog-github-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid #f0c27a66;
+        border-radius: 8px;
+        color: #f0c27a;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      .changelog-github-link:hover {
+        background: #f0c27a22;
+        border-color: #f0c27a;
+        color: #ffdd99;
+      }
+      .changelog-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      .changelog-actions .changelog-github-link,
+      .changelog-actions .changelog-download-link {
+        margin-top: 0;
+      }
+      .changelog-download-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background: #f0c27a;
+        color: #1a1a2e;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+      }
+      .changelog-download-link:hover {
+        background: #ffdd99;
+        color: #1a1a2e;
+      }
+      .changelog-filesize {
+        opacity: 0.75;
+        font-weight: 500;
+      }
+
+      .latest-download-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: linear-gradient(135deg, #2a2a4a, #1f1f3a);
+        border: 1px solid #f0c27a55;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .latest-download-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+      .latest-download-label {
+        opacity: 0.7;
+        font-size: 0.85rem;
+      }
+      .latest-download-version {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #f0c27a;
+      }
+      .changelog-download-link--large {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        border-top: 1px solid #f0c27a33;
+        font-size: 0.9rem;
+        opacity: 0.6;
+        margin-top: 2rem;
+      }
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.6rem 1.5rem;
+      }
+      .footer-left {
+        flex: 1;
+        min-width: 220px;
+      }
+      .footer-build {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: inherit;
+        opacity: 0;
+        transition: opacity 0.4s ease, color 0.2s ease;
+        white-space: nowrap;
+      }
+      .footer-build.visible {
+        opacity: 1;
+      }
+      .footer-build:hover {
+        color: #ffdd99;
+      }
+      .footer-disclaimer {
+        margin: 1rem auto 0;
+        padding-top: 1rem;
+        border-top: 1px solid #f0c27a22;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        opacity: 0.55;
+      }
+      .build-tag-value {
+        font-weight: 700;
+        color: #f0c27a;
+      }
+
+      .wilkcraft-link {
+        position: relative;
+        color: inherit;
+        text-decoration: none;
+        font-weight: bold;
+        padding-bottom: 3px;
+        transition: color 0.25s ease;
+      }
+      .wilkcraft-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: currentColor;
+        transition: background-color 0.25s ease, transform 0.35s ease;
+        transform-origin: center;
+      }
+      .wilkcraft-link:hover::after {
+        transform: scaleX(1.2);
+      }
+
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: #f0c27a;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        line-height: 1;
+      }
+      .menu-toggle i {
+        pointer-events: none;
+      }
+
+      @media (max-width: 680px) {
+        html.menu-open,
+        body.menu-open {
+          overflow: hidden;
+          height: 100%;
+        }
+        header {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: nowrap;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+        }
+        .menu-toggle {
+          display: block;
+        }
+        nav {
+          display: none;
+          position: fixed;
+          top: 72px;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.3rem;
+          background: rgba(26, 26, 46, 0.98);
+          backdrop-filter: blur(6px);
+          border-bottom: 2px solid #f0c27a;
+          padding: 1rem;
+          z-index: 999;
+        }
+        nav.open {
+          display: flex;
+          flex-wrap: nowrap;
+          max-height: calc(100vh - 72px);
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+        }
+        nav a {
+          width: 100%;
+          text-align: center;
+          padding: 0.7rem;
+        }
+        .nav-utility {
+          width: fit-content;
+          max-width: 100%;
+          margin: 0.3rem auto 0;
+          justify-content: center;
+        }
+        .lang-dropdown {
+          flex: 1;
+        }
+        .nav-discord {
+          font-size: 1.4rem;
+        }
+        .hero h2 {
+          font-size: 2.2rem;
+        }
+        .page-title {
+          font-size: 1.8rem;
+        }
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+        .changelog-header {
+          padding: 1rem;
+        }
+        .changelog-body {
+          padding: 0 1rem 1.2rem 1.4rem;
+        }
+        .latest-download-banner {
+          flex-direction: column;
+          align-items: stretch;
+          text-align: center;
+        }
+      }
+
+      .nav-discord {
+        color: #5865f2;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+      }
+      .nav-discord:hover {
+        color: #8891ff;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="index.html" class="logo-area">
+        <img src="img/logo.png" alt="Raft World Logo" />
+        <h1>Raft World</h1>
+      </a>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <nav>
+        <a href="index.html" data-key="nav_home"></a>
+        <a href="wiki.html" data-key="nav_wiki"></a>
+        <a href="progression.html" data-key="nav_progression"></a>
+        <a href="loot.html" data-key="nav_loot"></a>
+        <a href="advancements.html" data-key="nav_advancements"></a>
+        <a href="world.html" data-key="nav_world"></a>
+        <a href="faq.html" data-key="nav_faq"></a>
+        <a href="ideas.html" data-key="nav_ideas"></a>
+        <div class="nav-utility">
+          <select id="langSelector" class="lang-dropdown">
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+          </select>
+          <a
+            href="https://discord.gg/7WCeHgphsb"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-discord"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h2 class="page-title" data-key="changelog_title"></h2>
+      <p class="page-sub" data-key="changelog_sub"></p>
+
+      <div
+        id="latestDownloadBanner"
+        class="latest-download-banner"
+        style="display: none;"
+      >
+        <div class="latest-download-info">
+          <span
+            class="latest-download-label"
+            data-key="changelog_latest_version_label"
+          ></span>
+          <span class="latest-download-version"></span>
+        </div>
+        <a
+          id="latestDownloadBtn"
+          class="changelog-download-link changelog-download-link--large"
+          download
+        >
+          <i class="fas fa-download"></i>
+          <span class="latest-download-text"></span>
+        </a>
+      </div>
+
+      <p
+        id="changelogStatus"
+        class="changelog-status"
+        data-key="changelog_loading"
+      ></p>
+      <div id="changelogList" class="changelog-list"></div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p class="footer-left">
+          © 2026 Raft World Mod &bull;
+          <a
+            href="https://www.wilkcraft.work/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            Wilkcraft
+          </a>
+          &bull;
+          <a
+            href="https://github.com/wilkcraft/RaftWorld/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            <i class="fas fa-bug"></i>
+            <span data-key="footer_bug"></span>
+          </a>
+        </p>
+        <a href="changelog.html" id="buildTag" class="footer-build">
+          <i class="fas fa-code-branch"></i>
+          <span data-key="footer_build"></span
+          ><span class="build-tag-sep">: </span
+          ><span class="build-tag-value"></span>
+        </a>
+      </div>
+      <p class="footer-disclaimer" data-key="footer_disclaimer"></p>
+    </footer>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/marked/16.3.0/lib/marked.umd.min.js"
+      defer
+    ></script>
+    <script src="lang.js" defer></script>
+    <script src="menu.js?v=2" defer></script>
+    <script src="build-footer.js" defer></script>
+    <script src="changelog.js?v=5" defer></script>
+  </body>
+</html>

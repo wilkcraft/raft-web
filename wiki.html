@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wiki - Raft World</title>
+    <link rel="icon" href="img/favicon.ico" sizes="any" />
+    <link rel="icon" href="img/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="img/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @font-face {
+        font-family: "Minecraftia";
+        src: url("fonts/Minecraftia.woff2") format("woff2");
+        font-display: swap;
+      }
+      .logo-area h1,
+      .page-title,
+      .hero h2,
+      .stage-title,
+      .adv-card .title,
+      .wiki-block .name,
+      nav a,
+      .btn {
+        font-family: "Minecraftia", "Segoe UI", sans-serif;
+        letter-spacing: 0.5px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      a {
+        color: #f0c27a;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #ffdd99;
+      }
+
+      header {
+        background: #16162c;
+        border-bottom: 4px solid #3a3a3a;
+        backdrop-filter: blur(6px);
+        padding: 0.8rem 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .logo-area img {
+        height: 48px;
+        width: 48px;
+        object-fit: contain;
+        transition: transform 0.35s ease;
+      }
+
+      .logo-area h1 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #f0c27a;
+        letter-spacing: 1px;
+        transition: color 0.25s ease, transform 0.25s ease;
+      }
+
+      .logo-area:hover img {
+        transform: rotate(-8deg) scale(1.08);
+      }
+
+      .logo-area:hover h1 {
+        color: #ffdd99;
+        transform: translateX(3px);
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.4rem 1rem;
+        width: 100%;
+      }
+      nav a {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+        font-size: 0.95rem;
+      }
+      nav a:hover,
+      nav a.active {
+        background: #f0c27a22;
+        color: #ffdd99;
+      }
+
+      .lang-dropdown {
+        background: #2a2a4a;
+        color: #e0e0e0;
+        border: 1px solid #f0c27a66;
+        border-radius: 6px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.95rem;
+        cursor: pointer;
+        outline: none;
+        transition: border 0.2s;
+        min-width: 150px;
+      }
+      .lang-dropdown:hover {
+        border-color: #f0c27a;
+      }
+
+      .nav-utility {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-left: auto;
+      }
+      .container {
+        flex: 1;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        width: 100%;
+      }
+      .page-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #f0c27a;
+        margin-bottom: 0.5rem;
+        border-bottom: 2px solid #f0c27a33;
+        padding-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .title-icon {
+        width: 40px;
+        height: 40px;
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        flex-shrink: 0;
+      }
+      .page-sub {
+        opacity: 0.7;
+        margin-bottom: 2rem;
+      }
+      .wiki-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+      }
+      .wiki-search {
+        flex: 1;
+        min-width: 180px;
+        background: #1f1f3a;
+        border: 1px solid #f0c27a44;
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        color: #e0e0e0;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border 0.2s;
+      }
+      .wiki-search:focus {
+        border-color: #f0c27a;
+      }
+      .wiki-search::placeholder {
+        color: #9999b3;
+      }
+      .wiki-filter {
+        background: #2a2a4a;
+        color: #e0e0e0;
+        border: 1px solid #f0c27a66;
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+        cursor: pointer;
+        outline: none;
+      }
+      .wiki-filter:hover {
+        border-color: #f0c27a;
+      }
+      .wiki-empty {
+        opacity: 0.6;
+        padding: 1rem 0;
+        text-align: center;
+      }
+      .wiki-block {
+        background: #1f1f3a;
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #f0c27a;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem 2rem;
+      }
+      .wiki-block .name {
+        font-weight: 700;
+        font-size: 1.2rem;
+        min-width: 120px;
+      }
+      .wiki-block .desc {
+        flex: 1;
+        opacity: 0.85;
+      }
+      .wiki-block .meta {
+        font-size: 0.85rem;
+        opacity: 0.6;
+        background: #2a2a4a;
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+      }
+      footer {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        border-top: 1px solid #f0c27a33;
+        font-size: 0.9rem;
+        opacity: 0.6;
+        margin-top: 2rem;
+      }
+
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: #f0c27a;
+        font-size: 1.6rem;
+        cursor: pointer;
+        padding: 0.3rem 0.6rem;
+        line-height: 1;
+      }
+      .menu-toggle i {
+        pointer-events: none;
+      }
+
+      .wiki-toggle {
+        display: none;
+        background: none;
+        border: 1px solid #f0c27a66;
+        color: #f0c27a;
+        border-radius: 6px;
+        width: 34px;
+        height: 34px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1rem;
+        align-self: flex-end;
+        transition: border-color 0.2s ease;
+      }
+      .wiki-toggle:hover {
+        border-color: #f0c27a;
+      }
+      .wiki-toggle i {
+        transition: transform 0.25s ease;
+        pointer-events: none;
+      }
+      .wiki-toggle.open i {
+        transform: rotate(180deg);
+      }
+
+      .wiki-recipe-img {
+        display: none;
+        width: 100%;
+        justify-content: center;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .wiki-recipe-img img {
+        max-width: 220px;
+        width: 100%;
+        margin: 0 auto;
+        display: block;
+        image-rendering: pixelated;
+      }
+      .wiki-block.wiki-open .wiki-recipe-img {
+        max-height: 260px;
+      }
+
+      @media (max-width: 680px) {
+        html.menu-open,
+        body.menu-open {
+          overflow: hidden;
+          height: 100%;
+        }
+        .title-icon {
+          width: 30px;
+          height: 30px;
+        }
+        header {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: nowrap;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+        }
+        .menu-toggle {
+          display: block;
+        }
+        nav {
+          display: none;
+          position: fixed;
+          top: 72px;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.3rem;
+          background: rgba(26, 26, 46, 0.98);
+          backdrop-filter: blur(6px);
+          border-bottom: 2px solid #f0c27a;
+          padding: 1rem;
+          z-index: 999;
+        }
+        nav.open {
+          display: flex;
+          flex-wrap: nowrap;
+          max-height: calc(100vh - 72px);
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+        }
+        nav a {
+          width: 100%;
+          text-align: center;
+          padding: 0.7rem;
+        }
+        .nav-utility {
+          width: fit-content;
+          max-width: 100%;
+          margin: 0.3rem auto 0;
+          justify-content: center;
+        }
+        .lang-dropdown {
+          flex: 1;
+        }
+        .nav-discord {
+          font-size: 1.4rem;
+        }
+        .wiki-block {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.4rem;
+        }
+        .wiki-controls {
+          flex-direction: column;
+        }
+        .wiki-toggle {
+          display: flex;
+        }
+        .wiki-recipe-img {
+          display: flex;
+        }
+        .recipe-preview {
+          display: none !important;
+        }
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+        .footer-build {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .wilkcraft-link {
+        position: relative;
+        color: inherit;
+        text-decoration: none;
+        font-weight: bold;
+        padding-bottom: 3px;
+        transition: color 0.25s ease;
+      }
+
+      /* Línea SIEMPRE visible */
+      .wilkcraft-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: currentColor; /* mismo color que el texto */
+        transition: background-color 0.25s ease, transform 0.35s ease;
+        transform-origin: center;
+      }
+
+      /* Animación al hacer hover */
+      .wilkcraft-link:hover::after {
+        transform: scaleX(1.2); /* pequeño efecto animado */
+      }
+
+      .recipe-preview {
+        position: fixed;
+        display: none;
+        pointer-events: none;
+        z-index: 9999;
+        background: #202038;
+        border: 2px solid #f0c27a;
+        border-radius: 10px;
+        padding: 8px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        image-rendering: pixelated;
+      }
+
+      .recipe-preview img {
+        display: block;
+        max-width: 350px;
+        max-height: 350px;
+        image-rendering: pixelated;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.6rem 1.5rem;
+      }
+
+      .footer-left {
+        flex: 1;
+        min-width: 220px;
+      }
+
+      .footer-build {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: inherit;
+        opacity: 0;
+        transition: opacity 0.4s ease, color 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .footer-build.visible {
+        opacity: 1;
+      }
+
+      .footer-build:hover {
+        color: #ffdd99;
+      }
+
+      .footer-disclaimer {
+        margin: 1rem auto 0;
+        padding-top: 1rem;
+        border-top: 1px solid #f0c27a22;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        opacity: 0.55;
+      }
+
+      .build-tag-value {
+        font-weight: 700;
+        color: #f0c27a;
+      }
+
+      .nav-discord {
+        color: #5865f2;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+      }
+      .nav-discord:hover {
+        color: #8891ff;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="index.html" class="logo-area">
+        <img src="img/logo.png" alt="Raft World Logo" />
+        <h1>Raft World</h1>
+      </a>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <nav>
+        <a href="index.html" data-key="nav_home"></a>
+        <a href="wiki.html" class="active" data-key="nav_wiki"></a>
+        <a href="progression.html" data-key="nav_progression"></a>
+        <a href="loot.html" data-key="nav_loot"></a>
+        <a href="advancements.html" data-key="nav_advancements"></a>
+        <a href="world.html" data-key="nav_world"></a>
+        <a href="faq.html" data-key="nav_faq"></a>
+        <a href="ideas.html" data-key="nav_ideas"></a>
+        <div class="nav-utility">
+          <select id="langSelector" class="lang-dropdown">
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+          </select>
+          <a
+            href="https://discord.gg/7WCeHgphsb"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-discord"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h2 class="page-title">
+        <img src="img/icons/book.png" class="title-icon" alt="" />
+        <span data-key="wiki_title"></span>
+      </h2>
+      <p class="page-sub" data-key="wiki_sub"></p>
+
+      <div class="wiki-controls">
+        <input
+          type="text"
+          id="wikiSearch"
+          class="wiki-search"
+          data-key-placeholder="wiki_search_placeholder"
+        />
+        <select id="wikiFilter" class="wiki-filter"></select>
+      </div>
+
+      <div id="wiki-list"></div>
+
+      <!-- Coming soon -->
+      <div class="wiki-block" style="border-left-color: #888">
+        <span class="name" data-key="wiki_more"></span>
+        <span class="desc" data-key="wiki_more_desc"></span>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p class="footer-left">
+          © 2026 Raft World Mod &bull;
+          <a
+            href="https://www.wilkcraft.work/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            Wilkcraft
+          </a>
+          &bull;
+          <a
+            href="https://github.com/wilkcraft/RaftWorld/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wilkcraft-link"
+          >
+            <i class="fas fa-bug"></i>
+            <span data-key="footer_bug"></span>
+          </a>
+        </p>
+        <a href="changelog.html" id="buildTag" class="footer-build">
+          <i class="fas fa-code-branch"></i>
+          <span data-key="footer_build"></span
+          ><span class="build-tag-sep">: </span
+          ><span class="build-tag-value"></span>
+        </a>
+      </div>
+      <p class="footer-disclaimer" data-key="footer_disclaimer"></p>
+    </footer>
+
+    <script src="lang.js" defer></script>
+    <script src="menu.js?v=2" defer></script>
+    <script src="build-footer.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const list = document.getElementById("wiki-list");
+        const searchInput = document.getElementById("wikiSearch");
+        const filterSelect = document.getElementById("wikiFilter");
+
+        let items = {};
+        try {
+          const resp = await fetch(`wiki.json?v=${Date.now()}`, {
+            cache: "no-store",
+          });
+          items = await resp.json();
+        } catch (e) {
+          console.warn("Could not load wiki.json:", e);
+        }
+        const entries = Object.entries(items);
+
+        function buildFilterOptions(lang) {
+          const data = langMap[lang] || {};
+          const categories = [
+            ...new Set(entries.map(([, d]) => d.category).filter(Boolean)),
+          ].sort();
+          const current = filterSelect.value || "all";
+          filterSelect.innerHTML = "";
+
+          const allOpt = document.createElement("option");
+          allOpt.value = "all";
+          allOpt.textContent = data["wiki_filter_all"] || "All";
+          filterSelect.appendChild(allOpt);
+
+          categories.forEach((cat) => {
+            const opt = document.createElement("option");
+            opt.value = cat;
+            opt.textContent = data[`wiki_category_${cat}`] || cat;
+            filterSelect.appendChild(opt);
+          });
+
+          filterSelect.value = [...filterSelect.options].some(
+            (o) => o.value === current,
+          )
+            ? current
+            : "all";
+        }
+
+        function createBlock(id, d) {
+          const block = document.createElement("div");
+          block.className = "wiki-block";
+          block.dataset.recipe = d.recipe || id;
+          block.dataset.category = d.category || "";
+          block.dataset.id = id;
+
+          const name = document.createElement("span");
+          name.className = "name";
+          name.dataset.key = d.name;
+          block.appendChild(name);
+
+          const desc = document.createElement("span");
+          desc.className = "desc";
+          desc.dataset.key = d.desc;
+          block.appendChild(desc);
+
+          if (d.meta) {
+            const meta = document.createElement("span");
+            meta.className = "meta";
+            meta.dataset.key = d.meta;
+            block.appendChild(meta);
+          }
+
+          const toggle = document.createElement("button");
+          toggle.className = "wiki-toggle";
+          toggle.type = "button";
+          toggle.setAttribute("aria-label", "Mostrar imagen");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+          block.appendChild(toggle);
+
+          const imgPanel = document.createElement("div");
+          imgPanel.className = "wiki-recipe-img";
+          const imgEl = document.createElement("img");
+          imgPanel.appendChild(imgEl);
+          block.appendChild(imgPanel);
+
+          toggle.addEventListener("click", () => {
+            const isOpen = block.classList.toggle("wiki-open");
+            toggle.classList.toggle("open", isOpen);
+            toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            if (isOpen) {
+              imgEl.src = `img/recipes/${block.dataset.recipe}.png`;
+            } else {
+              imgEl.removeAttribute("src");
+            }
+          });
+
+          return block;
+        }
+
+        function render() {
+          const lang = localStorage.getItem("raftworld_lang") || "es";
+          const data = langMap[lang] || {};
+          const search = searchInput.value.trim().toLowerCase();
+          const filter = filterSelect.value || "all";
+
+          let visible = entries.filter(([, d]) => {
+            const matchesCategory = filter === "all" || d.category === filter;
+            const displayName = (data[d.name] || "").toLowerCase();
+            const matchesSearch = displayName.includes(search);
+            return matchesCategory && matchesSearch;
+          });
+
+          visible.sort(([, a], [, b]) =>
+            (data[a.name] || "").localeCompare(data[b.name] || "", lang, {
+              sensitivity: "base",
+            }),
+          );
+
+          list.innerHTML = "";
+          if (visible.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "wiki-empty";
+            empty.textContent = data["wiki_filter_all"] ? "—" : "—";
+            list.appendChild(empty);
+          } else {
+            visible.forEach(([id, d]) => list.appendChild(createBlock(id, d)));
+          }
+
+          applyLanguage(lang);
+          setupRecipePreview();
+        }
+
+        let previewEl = null;
+        function setupRecipePreview() {
+          if (window.matchMedia("(max-width: 680px)").matches) return;
+          if (!previewEl) {
+            previewEl = document.createElement("div");
+            previewEl.className = "recipe-preview";
+            const img = document.createElement("img");
+            previewEl.appendChild(img);
+            document.body.appendChild(previewEl);
+          }
+          const img = previewEl.querySelector("img");
+
+          document
+            .querySelectorAll(".wiki-block[data-recipe]")
+            .forEach((block) => {
+              const recipe = block.dataset.recipe;
+              block.addEventListener("mouseenter", () => {
+                img.src = `img/recipes/${recipe}.png`;
+                previewEl.style.display = "block";
+              });
+              block.addEventListener("mouseleave", () => {
+                previewEl.style.display = "none";
+              });
+              block.addEventListener("mousemove", (e) => {
+                const offset = 20;
+                let x = e.clientX + offset;
+                let y = e.clientY + offset;
+                const rect = previewEl.getBoundingClientRect();
+                if (x + rect.width > window.innerWidth)
+                  x = e.clientX - rect.width - offset;
+                if (y + rect.height > window.innerHeight)
+                  y = e.clientY - rect.height - offset;
+                previewEl.style.left = `${x}px`;
+                previewEl.style.top = `${y}px`;
+              });
+              img.onerror = () => {
+                previewEl.style.display = "none";
+              };
+            });
+        }
+
+        function applyPlaceholder(lang) {
+          const data = langMap[lang] || {};
+          const key = searchInput.dataset.keyPlaceholder;
+          if (key && data[key]) searchInput.placeholder = data[key];
+        }
+
+        if (window.langReady) await window.langReady;
+        const initialLang = localStorage.getItem("raftworld_lang") || "es";
+        buildFilterOptions(initialLang);
+        applyPlaceholder(initialLang);
+        render();
+
+        searchInput.addEventListener("input", render);
+        filterSelect.addEventListener("change", render);
+        document
+          .getElementById("langSelector")
+          ?.addEventListener("change", (e) => {
+            const lang = e.target.value;
+            buildFilterOptions(lang);
+            applyPlaceholder(lang);
+            render();
+          });
+      });
+    </script>
+  </body>
+</html>
