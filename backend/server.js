@@ -45,17 +45,7 @@ async function fetchCrowdinLanguages() {
 }
 
 // Solo aceptar peticiones desde tu propia web
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  if (!origin) return next();
-
-  if (origin !== process.env.ALLOWED_ORIGIN) {
-    return res.status(403).json({ error: "Origin not allowed" });
-  }
-
-  next();
-});
+app.use(cors({ origin: process.env.ALLOWED_ORIGIN }));
 
 // Límite: máx 5 envíos cada 10 minutos por IP
 const limiter = rateLimit({
