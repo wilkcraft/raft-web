@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
+import cors from "cors";
 dotenv.config();
 const app = express();
 app.use(express.json({ limit: "10kb" }));
