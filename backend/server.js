@@ -138,6 +138,83 @@ app.get("/api/languages", async (req, res) => {
   }
 });
 
+async function updateStatsJsonOnGithub(newContentObj) {
+  const {
+    GITHUB_TOKEN,
+    GITHUB_REPO_OWNER,
+    GITHUB_REPO_NAME,
+    GITHUB_STATS_PATH,
+    GITHUB_BRANCH,
+  } = process.env;
+  const apiUrl = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/contents/${GITHUB_STATS_PATH}`;
+
+  const getResp = await fetch(`${apiUrl}?ref=${GITHUB_BRANCH}`, {
+    headers: { Authorization: `Bearer ${GITHUB_TOKEN}` },
+  });
+  if (!getResp.ok)
+    throw new Error(`No se pudo leer stats.json (${getResp.status})`);
+  const getData = await getResp.json();
+  const sha = getData.sha;
+
+  const contentBase64 = Buffer.from(
+    JSON.stringify(newContentObj, null, 2),
+  ).toString("base64");
+
+  const putResp = await fetch(apiUrl, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: "chore: actualizar stats.json automáticamente",
+      content: contentBase64,
+      sha,
+      branch: GITHUB_BRANCH,
+    }),
+  });
+  if (!putResp.ok) {
+    const errBody = await putResp.text();
+    throw new Error(
+      `No se pudo escribir stats.json (${putResp.status}): ${errBody}`,
+    );
+  }
+}
+
+app.get("/api/refresh-stats", async (req, res) => {
+  const now = Date.now();
+  const downloadsStale =
+    !downloadsCache.data || now - downloadsCache.timestamp >= CACHE_TTL_MS;
+  const languagesStale =
+    !languagesCache.data || now - languagesCache.timestamp >= CACHE_TTL_MS;
+
+  if (!downloadsStale && !languagesStale) {
+    return res.json({ updated: false });
+  }
+
+  try {
+    const [modrinth, curseforge, crowdin] = await Promise.all([
+      fetchModrinthDownloads().catch(() => null),
+      fetchCurseForgeDownloads().catch(() => null),
+      fetchCrowdinLanguages().catch(() => null),
+    ]);
+
+    downloadsCache = { data: { modrinth, curseforge }, timestamp: now };
+    languagesCache = { data: { crowdin }, timestamp: now };
+
+    await updateStatsJsonOnGithub({
+      downloads: { curseforge: curseforge ?? 0, modrinth: modrinth ?? 0 },
+      languages: { crowdin: crowdin ?? 0 },
+      updatedAt: new Date().toISOString(),
+    });
+
+    res.json({ updated: true });
+  } catch (err) {
+    console.error("Error actualizando stats.json:", err.message);
+    res.status(502).json({ error: "No se pudo actualizar stats.json" });
+  }
+});
+
 const port = process.env.PORT || 4750;
 app.listen(port, () => {
   console.log(`Backend de ideas escuchando en el puerto ${port}`);
