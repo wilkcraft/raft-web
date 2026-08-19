@@ -1,5 +1,10 @@
 {
-  "downloads": { "curseforge": 0, "modrinth": 0 },
-  "languages": { "crowdin": 0 },
-  "updatedAt": null
+  "downloads": {
+    "curseforge": 553,
+    "modrinth": 302
+  },
+  "languages": {
+    "crowdin": 29
+  },
+  "updatedAt": "2026-08-19T14:37:34.934Z"
 }
