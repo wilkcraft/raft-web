@@ -42,13 +42,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const resp = await fetch(
-      "https://raft-web-backend.onrender.com/api/languages",
-    );
+    const resp = await fetch("data/stats.json?v=" + Date.now(), {
+      cache: "no-store",
+    });
     if (!resp.ok) throw new Error("Error al obtener idiomas");
     const data = await resp.json();
-    if (typeof data.crowdin === "number") {
-      animateCount(crowdinEl, data.crowdin);
+    if (typeof data.languages?.crowdin === "number") {
+      animateCount(crowdinEl, data.languages.crowdin);
     }
   } catch (err) {
     console.warn("No se pudieron cargar los idiomas:", err.message);

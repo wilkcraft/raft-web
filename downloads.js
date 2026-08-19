@@ -46,16 +46,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const resp = await fetch(
-      "https://raft-web-backend.onrender.com/api/downloads",
-    );
+    const resp = await fetch("data/stats.json?v=" + Date.now(), {
+      cache: "no-store",
+    });
     if (!resp.ok) throw new Error("Error al obtener descargas");
     const data = await resp.json();
-    if (curseforgeEl && typeof data.curseforge === "number") {
-      animateCount(curseforgeEl, data.curseforge, "fas fa-fire");
+    if (curseforgeEl && typeof data.downloads?.curseforge === "number") {
+      animateCount(curseforgeEl, data.downloads.curseforge, "fas fa-fire");
     }
-    if (modrinthEl && typeof data.modrinth === "number") {
-      animateCount(modrinthEl, data.modrinth, "fas fa-leaf");
+    if (modrinthEl && typeof data.downloads?.modrinth === "number") {
+      animateCount(modrinthEl, data.downloads.modrinth, "fas fa-leaf");
     }
   } catch (err) {
     console.warn("No se pudieron cargar las descargas:", err.message);
